@@ -2,7 +2,7 @@
 # WORKER_COUNT=1 HOST_UID=$(id -u) docker-compose -f ./docker/docker-compose-dev.yaml up --build -d
 # docker-compose -f ./docker/docker-compose-dev.yaml down
 # Build this image from neurophotonics level on your local machine
-version: '2.4'
+version: "2.4"
 services:
   standard_worker:
     build:
