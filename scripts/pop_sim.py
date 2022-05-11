@@ -1,4 +1,6 @@
-from neurophotonics.sim import Detection, Fluorescence, Tissue
+from neurophotonics.sim import Detection
+from neurophotonics.sim import Fluorescence
+from neurophotonics.sim import Tissue
 from scripts.helper import keys_used
 
 print(
