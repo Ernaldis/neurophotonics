@@ -78,7 +78,8 @@ class Geometry(dj.Imported):
         self.insert1(key)
 
         efields, dfields = (Design & key).fetch1("efields", "dfields")
-        gm_file, design_path = (Design & key).fetch1("geometry_file", "design_path")
+        gm_file, design_path = (Design & key).fetch1("geometry_file",
+                                                     "design_path")
 
         gm_fullpath = Path("..") / design_path / gm_file
 
@@ -112,8 +113,7 @@ class Geometry(dj.Imported):
                     d_height=data["h"],
                     d_width=data["w"],
                     d_thick=data["t"],
-                )
-            )
+                ))
         self.Detector.insert(detector_entry)
 
         emitter_entry = []
@@ -142,6 +142,5 @@ class Geometry(dj.Imported):
                     e_height=data["h"],
                     e_width=data["w"],
                     e_thick=data["t"],
-                )
-            )
+                ))
         self.Emitter.insert(emitter_entry)

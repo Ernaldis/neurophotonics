@@ -19,9 +19,8 @@ def run(**kwargs):
     try:
         worker.run()
     except Exception:
-        _logger.exception(
-            "Worker '{}' encountered an exception:".format(kwargs["worker_name"])
-        )
+        _logger.exception("Worker '{}' encountered an exception:".format(
+            kwargs["worker_name"]))
 
 
 def cli():

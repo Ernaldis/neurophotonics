@@ -15,7 +15,6 @@ _logger.setLevel("INFO")
 
 __all__ = ["standard_worker", "WorkerLog", "ErrorLog"]
 
-
 # -------- Define process(s) --------
 org_name, workflow_name, _ = db_prefix.split("_")
 

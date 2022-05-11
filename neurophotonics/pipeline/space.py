@@ -5,6 +5,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 
 class Space:
+
     def __init__(
         self,
         pitch=1,
@@ -62,16 +63,12 @@ class Space:
         m = photons_to_replace.sum()
         self.total_count += m
         if self.emitter_shape == "rect":
-            positions = (
-                np.random.rand(m, 3) - 0.5
-            ) * self.emitter_size  # initial position
+            positions = (np.random.rand(m, 3) -
+                         0.5) * self.emitter_size  # initial position
         elif self.emitter_shape == "sphere":
             positions = np.random.randn(m, 3)
-            positions *= (
-                0.5
-                * np.array(self.emitter_size)
-                / np.sqrt((positions**2).sum(axis=1, keepdims=True))
-            )
+            positions *= (0.5 * np.array(self.emitter_size) / np.sqrt(
+                (positions**2).sum(axis=1, keepdims=True)))
         else:
             raise Exception("Invalid emitter shape")
         self.positions[photons_to_replace, :] = positions
@@ -83,7 +80,7 @@ class Space:
             directions = np.random.randn(m, 3)
             directions /= np.sqrt((directions**2).sum(axis=1, keepdims=True))
         elif self.emitter_spread == "lambertian":  # oriented along z-axis
-            elev_sin = np.random.rand(m) ** 0.5  # sine of elevation
+            elev_sin = np.random.rand(m)**0.5  # sine of elevation
             azimuth = np.random.rand(m) * 2 * np.pi
             azi_cos, azi_sin = np.cos(azimuth), np.sin(azimuth)
 
@@ -101,7 +98,8 @@ class Space:
 
             # beam steering around the x-axis
             if self.y_steer:
-                steer_cos, steer_sin = np.cos(self.y_steer), np.sin(self.y_steer)
+                steer_cos, steer_sin = np.cos(self.y_steer), np.sin(
+                    self.y_steer)
                 vz, vy = (
                     steer_cos * vz - steer_sin * vy,
                     steer_sin * vz + steer_cos * vy,
@@ -113,8 +111,7 @@ class Space:
 
         # retain photons' starting positions
         self.start_positions[photons_to_replace, :] = self.positions[
-            photons_to_replace, :
-        ]
+            photons_to_replace, :]
 
     def detector_sensitivity(self):
         """
@@ -126,11 +123,11 @@ class Space:
             # along z-axis
             return np.maximum(0, np.sign(self.directions[:, 2]))
         if self.detector_type == "narrowed":
-            return np.maximum(0, self.directions[:, 2]) ** 4  # along z-axis
+            return np.maximum(0, self.directions[:, 2])**4  # along z-axis
         if self.detector_type == "narrowed2":
-            return np.maximum(0, self.directions[:, 2]) ** 2  # along z-axis
+            return np.maximum(0, self.directions[:, 2])**2  # along z-axis
         if self.detector_type == "narrowed8":
-            return np.maximum(0, self.directions[:, 2]) ** 8  # along z-axis
+            return np.maximum(0, self.directions[:, 2])**8  # along z-axis
         raise Exception("Unknown detector type")
 
     def accumulate(self, start_points, end_points, lengths):
@@ -141,20 +138,19 @@ class Space:
         for i in range(samples):
             fractions = np.random.rand(self.n)[:, None]
             dims = np.array(self.dims)
-            positions = np.round(
-                dims / 2
-                + (start_points * fractions + end_points * (1 - fractions)) / self.pitch
-            ).astype(np.int32)
-            keep = np.all(np.logical_and(positions >= 0, positions < dims), axis=1)
+            positions = np.round(dims / 2 +
+                                 (start_points * fractions + end_points *
+                                  (1 - fractions)) / self.pitch).astype(
+                                      np.int32)
+            keep = np.all(np.logical_and(positions >= 0, positions < dims),
+                          axis=1)
             positions = positions[keep, :]
             indices = np.ravel_multi_index(
-                (positions[:, 0], positions[:, 1], positions[:, 2]), self.volume.shape
-            )
+                (positions[:, 0], positions[:, 1], positions[:, 2]),
+                self.volume.shape)
             self.volume.ravel()[indices] += (
-                (self.detector_sensitivity() * lengths)[keep]
-                / samples
-                / self.pitch**3
-            )
+                (self.detector_sensitivity() * lengths)[keep] / samples /
+                self.pitch**3)
 
     def hop(self):
         """
@@ -178,11 +174,9 @@ class Space:
         scattered = np.logical_not(absorbed)
         m = scattered.sum()
         g = self.anisotropy
-        gcos = (
-            0.5
-            / g
-            * (1 + g * g - ((1 - g * g) / (1 - g + 2 * g * np.random.rand(m))) ** 2)
-        )
+        gcos = (0.5 / g * (1 + g * g -
+                           ((1 - g * g) /
+                            (1 - g + 2 * g * np.random.rand(m)))**2))
         gsin = np.sqrt(1 - gcos * gcos)
         v = self.directions[scattered] * np.sign(gcos[:, None])
         d = np.random.randn(m, 3) * 0.001
@@ -203,7 +197,7 @@ class Space:
     def plot(self, axis=None, title="", gamma=0.5, cmap="gray"):
         if axis is None:
             _, axis = plt.subplots(1, 1, figsize=(8, 8))
-        axis.imshow((self.volume.sum(axis=0)) ** gamma, cmap=cmap)
+        axis.imshow((self.volume.sum(axis=0))**gamma, cmap=cmap)
         axis.axis(False)
         scale_bar = ScaleBar(self.pitch * 1e-6)
         axis.add_artist(scale_bar)

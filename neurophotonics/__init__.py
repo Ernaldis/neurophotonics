@@ -7,13 +7,13 @@ if "custom" not in dj.config:
 
 # overwrite dj.config['custom'] values with environment variables if available
 dj.config["custom"]["database.prefix"] = os.getenv(
-    "DATABASE_PREFIX", dj.config["custom"].get("database.prefix", "")
-)
+    "DATABASE_PREFIX", dj.config["custom"].get("database.prefix", ""))
 
 db_prefix = dj.config["custom"]["database.prefix"]
 
 dj.config["stores"] = {
-    "photonics": dict(
+    "photonics":
+    dict(
         protocol="s3",
         endpoint="s3.amazonaws.com:443",
         bucket="dj-sciops",

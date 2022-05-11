@@ -49,7 +49,8 @@ def ingest_design():
         dict(
             design=0,
             design_title="Year-1 Design v101",
-            design_description="3-probe configuration: 30 um separation and 75 degree rotation.",
+            design_description=
+            "3-probe configuration: 30 um separation and 75 degree rotation.",
             design_path="./",
             geometry_file="Design_v101.csv",
             center_offset=(0, 0, 0),
@@ -63,7 +64,8 @@ def ingest_design():
         dict(
             design=1,
             design_title="Year-1 Design v102",
-            design_description="3-probe configuration: 60 um separation and 75 degree rotation.",
+            design_description=
+            "3-probe configuration: 60 um separation and 75 degree rotation.",
             design_path="./",
             geometry_file="Design_v102.csv",
             center_offset=(0, 0, 0),
@@ -77,7 +79,8 @@ def ingest_design():
         dict(
             design=2,
             design_title="Year-1 Design v103",
-            design_description="3-probe configuration: 120 um separation and 75 degree rotation.",
+            design_description=
+            "3-probe configuration: 120 um separation and 75 degree rotation.",
             design_path="./",
             geometry_file="Design_v103.csv",
             center_offset=(0, 0, 0),
@@ -91,7 +94,8 @@ def ingest_design():
         dict(
             design=3,
             design_title="Year-2 Design v201",
-            design_description="10-probe configuration. Straight emission beams",
+            design_description=
+            "10-probe configuration. Straight emission beams",
             design_path="./",
             geometry_file="Design_v201.csv",
             center_offset=(0, 0, 0),
@@ -105,7 +109,8 @@ def ingest_design():
         dict(
             design=4,
             design_title="Year-2 Design v201",
-            design_description="10-probe configuration. Straight emission beams",
+            design_description=
+            "10-probe configuration. Straight emission beams",
             design_path="./",
             geometry_file="Design_v201.csv",
             center_offset=(0, 0, 0),
@@ -119,7 +124,8 @@ def ingest_design():
         dict(
             design=5,
             design_title="Year-2 Design v201",
-            design_description="10-probe configuration. Straight emission beams",
+            design_description=
+            "10-probe configuration. Straight emission beams",
             design_path="./",
             geometry_file="Design_v201.csv",
             center_offset=(0, 0, 0),

@@ -37,30 +37,27 @@ class Tissue(dj.Computed):
         min_distance = 8.0
 
         def expand_over_shanks():
-            xyz = np.hstack(
-                [
-                    (Geometry.Emitter & key).fetch(
-                        "e_center_x", "e_center_y", "e_center_z"
-                    ),
-                    (Geometry.Detector & key).fetch(
-                        "d_center_x", "d_center_y", "d_center_z"
-                    ),
-                ]
-            )
+            xyz = np.hstack([
+                (Geometry.Emitter & key).fetch("e_center_x", "e_center_y",
+                                               "e_center_z"),
+                (Geometry.Detector & key).fetch("d_center_x", "d_center_y",
+                                                "d_center_z"),
+            ])
 
             margin = 50
             bounds_min = xyz.min(axis=-1) - margin
             bounds_max = xyz.max(axis=-1) + margin
 
-            volume = (bounds_max - bounds_min).prod() * 1e-9  # 1e-9 is for um3 -> mm3
+            volume = (bounds_max -
+                      bounds_min).prod() * 1e-9  # 1e-9 is for um3 -> mm3
             npoints = int(volume * density + 0.5)
 
-            points = np.random.rand(1, 3) * (bounds_max - bounds_min) + bounds_min
+            points = np.random.rand(1,
+                                    3) * (bounds_max - bounds_min) + bounds_min
             for i in tqdm.tqdm(range(npoints - 1)):
                 while True:
-                    point = (
-                        np.random.rand(1, 3) * (bounds_max - bounds_min) + bounds_min
-                    )
+                    point = (np.random.rand(1, 3) * (bounds_max - bounds_min) +
+                             bounds_min)
                     if distance.cdist(points, point).min() > min_distance:
                         break
                 points = np.vstack((points, point))
@@ -77,8 +74,7 @@ class Tissue(dj.Computed):
                 npoints=npoints,
                 min_distance=min_distance,
                 cell_xyz=points,
-            )
-        )
+            ))
 
 
 @schema
@@ -110,25 +106,22 @@ class Fluorescence(dj.Computed):
         volume = 0.5 * volume / volume.max()
 
         input_pars = list(
-            zip(
-                *(EField * ESim * Geometry.Emitter & key).fetch(
-                    "KEY",
-                    "pitch",
-                    "volume_dimx",
-                    "volume_dimy",
-                    "volume_dimz",
-                    "e_center_x",
-                    "e_center_y",
-                    "e_center_z",
-                    "e_norm_x",
-                    "e_norm_y",
-                    "e_norm_z",
-                    "e_top_x",
-                    "e_top_y",
-                    "e_top_z",
-                )
-            )
-        )
+            zip(*(EField * ESim * Geometry.Emitter & key).fetch(
+                "KEY",
+                "pitch",
+                "volume_dimx",
+                "volume_dimy",
+                "volume_dimz",
+                "e_center_x",
+                "e_center_y",
+                "e_center_z",
+                "e_norm_x",
+                "e_norm_y",
+                "e_norm_z",
+                "e_top_x",
+                "e_top_y",
+                "e_top_z",
+            )))
 
         def calculate(
             emit_key,
@@ -162,41 +155,26 @@ class Fluorescence(dj.Computed):
             assert abs(z_basis @ z_basis - 1) < 1e-4
 
             vxyz = np.int16(
-                np.round(
-                    (cell_xyz - e_xyz)
-                    @ np.vstack((x_basis, y_basis, z_basis)).T
-                    / pitch
-                    + dims / 2
-                )
-            )
+                np.round((cell_xyz - e_xyz) @ np.vstack(
+                    (x_basis, y_basis, z_basis)).T / pitch + dims / 2))
 
             # photon counts
-            v = (
-                neuron_cross_section
-                * photons_per_joule
-                * np.array(
-                    [
-                        volume[q[0], q[1], q[2]]
-                        if 0 <= q[0] < dims[0]
-                        and 0 <= q[1] < dims[1]
-                        and 0 <= q[2] < dims[2]
-                        else 0
-                        for q in vxyz
-                    ]
-                )
-            )
-            entry = dict(
-                key,
-                **emit_key,
-                reemitted_photons=np.float32(v),
-                photons_per_joule=v.sum()
-            )
+            v = (neuron_cross_section * photons_per_joule * np.array([
+                volume[q[0], q[1], q[2]] if 0 <= q[0] < dims[0]
+                and 0 <= q[1] < dims[1] and 0 <= q[2] < dims[2] else 0
+                for q in vxyz
+            ]))
+            entry = dict(key,
+                         **emit_key,
+                         reemitted_photons=np.float32(v),
+                         photons_per_joule=v.sum())
 
             Fluorescence.Emitter.insert1(entry, ignore_extra_fields=True)
 
         try:
             with Pool(cpu_count()) as p:
-                p.starmap(calculate, tqdm.tqdm(input_pars, total=len(input_pars)))
+                p.starmap(calculate,
+                          tqdm.tqdm(input_pars, total=len(input_pars)))
         except Exception as e:
             print(e)
             with dj.config(safemode=False):
@@ -230,25 +208,22 @@ class Detection(dj.Computed):
         volume = 0.5 * volume / volume.max()
 
         input_pars = list(
-            zip(
-                *(DField * DSim * Geometry.Detector & key).fetch(
-                    "KEY",
-                    "pitch",
-                    "volume_dimx",
-                    "volume_dimy",
-                    "volume_dimz",
-                    "d_center_x",
-                    "d_center_y",
-                    "d_center_z",
-                    "d_norm_x",
-                    "d_norm_y",
-                    "d_norm_z",
-                    "d_top_x",
-                    "d_top_y",
-                    "d_top_z",
-                )
-            )
-        )
+            zip(*(DField * DSim * Geometry.Detector & key).fetch(
+                "KEY",
+                "pitch",
+                "volume_dimx",
+                "volume_dimy",
+                "volume_dimz",
+                "d_center_x",
+                "d_center_y",
+                "d_center_z",
+                "d_norm_x",
+                "d_norm_y",
+                "d_norm_z",
+                "d_top_x",
+                "d_top_y",
+                "d_top_z",
+            )))
 
         def calculate(
             detect_key,
@@ -280,35 +255,24 @@ class Detection(dj.Computed):
             assert abs(y_basis @ y_basis - 1) < 1e-4
             assert abs(z_basis @ z_basis - 1) < 1e-4
             vxyz = np.int16(
-                np.round(
-                    (cell_xyz - d_xyz)
-                    @ np.vstack((x_basis, y_basis, z_basis)).T
-                    / pitch
-                    + dims / 2
-                )
-            )
+                np.round((cell_xyz - d_xyz) @ np.vstack(
+                    (x_basis, y_basis, z_basis)).T / pitch + dims / 2))
             # photon counts
-            v = np.array(
-                [
-                    volume[q[0], q[1], q[2]]
-                    if 0 <= q[0] < dims[0]
-                    and 0 <= q[1] < dims[1]
-                    and 0 <= q[2] < dims[2]
-                    else 0
-                    for q in vxyz
-                ]
-            )
-            entry = dict(
-                key,
-                **detect_key,
-                detect_probabilities=np.float32(v),
-                mean_probability=v.sum()
-            )
+            v = np.array([
+                volume[q[0], q[1], q[2]] if 0 <= q[0] < dims[0]
+                and 0 <= q[1] < dims[1] and 0 <= q[2] < dims[2] else 0
+                for q in vxyz
+            ])
+            entry = dict(key,
+                         **detect_key,
+                         detect_probabilities=np.float32(v),
+                         mean_probability=v.sum())
             Detection.Detector.insert1(entry, ignore_extra_fields=True)
 
         try:
             with Pool(cpu_count()) as p:
-                p.starmap(calculate, tqdm.tqdm(input_pars, total=len(input_pars)))
+                p.starmap(calculate,
+                          tqdm.tqdm(input_pars, total=len(input_pars)))
         except Exception as e:
             print(e)
             with dj.config(safemode=False):

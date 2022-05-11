@@ -215,33 +215,32 @@ def design103(save=False, output="Design_v103.csv"):
 def design201(save=False, output="Design_v201.csv"):
     # Design 2
     # Create 10 probes at 0, 0, 0
-    PG = ProbeGroup(
-        [
-            Probe(
-                probe_dimensions=[1200, 150, 1300],
-                n_e_box=[5, 60],
-                e_box_length=10,
-                e_box_sep=10,
-                e_box_vertical_margin=5,
-                e_box_horizontal_margin=30,
-                n_d_box=[22, 240],
-                d_box_length=5,
-                d_box_sep=0,
-                d_box_vertical_margin=0,
-                d_box_horizontal_margin=25,
-                name="P" + str(i),
-            )
-            for i in range(10)
-        ]
-    )
+    PG = ProbeGroup([
+        Probe(
+            probe_dimensions=[1200, 150, 1300],
+            n_e_box=[5, 60],
+            e_box_length=10,
+            e_box_sep=10,
+            e_box_vertical_margin=5,
+            e_box_horizontal_margin=30,
+            n_d_box=[22, 240],
+            d_box_length=5,
+            d_box_sep=0,
+            d_box_vertical_margin=0,
+            d_box_horizontal_margin=25,
+            name="P" + str(i),
+        ) for i in range(10)
+    ])
 
     # Position the Probes
     for i, probe in enumerate(PG.probes):
         if not i % 2:
             probe.rotate("z", 180)  # Around the origin (0, 0, 0)
-            probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, 75, 0])
+            probe.translate(
+                [-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, 75, 0])
         else:
-            probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, -75, 0])
+            probe.translate(
+                [-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, -75, 0])
 
     if save:
         df = PG.to_df()
@@ -253,25 +252,22 @@ def design201(save=False, output="Design_v201.csv"):
 def design202(save=False, output="Design_v202.csv"):
     # Design 2
     # Create 10 probes at 0, 0, 0
-    PG = ProbeGroup(
-        [
-            Probe(
-                probe_dimensions=[1200, 150, 1300],
-                n_e_box=[5, 60],
-                e_box_length=10,
-                e_box_sep=10,
-                e_box_vertical_margin=5,
-                e_box_horizontal_margin=30,
-                n_d_box=[22, 240],
-                d_box_length=5,
-                d_box_sep=0,
-                d_box_vertical_margin=0,
-                d_box_horizontal_margin=25,
-                name="P" + str(i),
-            )
-            for i in range(10)
-        ]
-    )
+    PG = ProbeGroup([
+        Probe(
+            probe_dimensions=[1200, 150, 1300],
+            n_e_box=[5, 60],
+            e_box_length=10,
+            e_box_sep=10,
+            e_box_vertical_margin=5,
+            e_box_horizontal_margin=30,
+            n_d_box=[22, 240],
+            d_box_length=5,
+            d_box_sep=0,
+            d_box_vertical_margin=0,
+            d_box_horizontal_margin=25,
+            name="P" + str(i),
+        ) for i in range(10)
+    ])
 
     def rotate_epixels(probe):
         # Rotate detectors in each column with the given angles
@@ -303,18 +299,26 @@ def design202(save=False, output="Design_v202.csv"):
                 probe.rotate("z", 180)  # Around the origin (0, 0, 0)
                 # Emission beams of the end-probes will be directed to the opposite shank.
                 if i == 0:
-                    [e_pixel.rotate_normal("z", 45) for e_pixel in probe.e_pixels]
+                    [
+                        e_pixel.rotate_normal("z", 45)
+                        for e_pixel in probe.e_pixels
+                    ]
                 else:
                     rotate_epixels(probe)
-                probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, 75, 0])
+                probe.translate(
+                    [-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, 75, 0])
 
             else:  # odds
                 # Emission beams of the end-probes will be directed to the opposite shank.
                 if i == 9:
-                    [e_pixel.rotate_normal("z", 45) for e_pixel in probe.e_pixels]
+                    [
+                        e_pixel.rotate_normal("z", 45)
+                        for e_pixel in probe.e_pixels
+                    ]
                 else:
                     rotate_epixels(probe)
-                probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, -75, 0])
+                probe.translate(
+                    [-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, -75, 0])
 
     position(PG)
 
