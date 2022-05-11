@@ -4,7 +4,8 @@ import datajoint as dj
 import pandas as pd
 
 from .. import db_prefix
-from .fields import DField, EField
+from .fields import DField
+from .fields import EField
 
 schema = dj.schema(db_prefix + "photonics")
 

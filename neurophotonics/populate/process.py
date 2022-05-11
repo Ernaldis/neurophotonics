@@ -2,7 +2,8 @@ import sys
 
 from datajoint_utilities.dj_worker import parse_args
 
-from neurophotonics.populate.worker import _logger, standard_worker
+from neurophotonics.populate.worker import _logger
+from neurophotonics.populate.worker import standard_worker
 
 # -------- Run process(s) --------
 configured_workers = {"standard_worker": standard_worker}

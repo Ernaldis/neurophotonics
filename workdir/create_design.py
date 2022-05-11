@@ -1,4 +1,5 @@
-from neurophotonics.utils.probe.probely import Probe, ProbeGroup
+from neurophotonics.utils.probe.probely import Probe
+from neurophotonics.utils.probe.probely import ProbeGroup
 
 
 def design101(save=False, output="Design_v101.csv"):

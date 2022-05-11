@@ -3,13 +3,18 @@ import gc
 import datajoint as dj
 import numpy as np
 import tqdm
-from multiprocess import Pool, cpu_count
+from multiprocess import cpu_count
+from multiprocess import Pool
 from scipy.spatial import distance
 from scipy.spatial.transform import Rotation as R
 
 from .. import db_prefix
-from .design import Design, Geometry
-from .fields import DField, DSim, EField, ESim
+from .design import Design
+from .design import Geometry
+from .fields import DField
+from .fields import DSim
+from .fields import EField
+from .fields import ESim
 
 schema = dj.schema(db_prefix + "photonics")
 

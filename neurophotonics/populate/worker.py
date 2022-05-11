@@ -1,9 +1,14 @@
 import logging
 
-from datajoint_utilities.dj_worker import DataJointWorker, ErrorLog, WorkerLog
+from datajoint_utilities.dj_worker import DataJointWorker
+from datajoint_utilities.dj_worker import ErrorLog
+from datajoint_utilities.dj_worker import WorkerLog
 
 from neurophotonics import db_prefix
-from neurophotonics.pipeline import demix, design, fields, sim
+from neurophotonics.pipeline import demix
+from neurophotonics.pipeline import design
+from neurophotonics.pipeline import fields
+from neurophotonics.pipeline import sim
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel("INFO")
