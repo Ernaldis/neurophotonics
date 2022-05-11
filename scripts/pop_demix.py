@@ -9,14 +9,10 @@ print(
         )
     )
     + keys_used(
-        Demix.populate(display_progress=False,
-                       processes=1024, reserve_jobs=True)
+        Demix.populate(display_progress=False, processes=1024, reserve_jobs=True)
     )
+    + keys_used(Cosine.populate(reserve_jobs=True, display_progress=False, processes=1))
     + keys_used(
-        Cosine.populate(reserve_jobs=True, display_progress=False, processes=1)
-    )
-    + keys_used(
-        SpikeSNR.populate(reserve_jobs=True,
-                          display_progress=False, processes=1)
+        SpikeSNR.populate(reserve_jobs=True, display_progress=False, processes=1)
     ),
 )
