@@ -238,9 +238,11 @@ def design201(save=False, output="Design_v201.csv"):
     for i, probe in enumerate(PG.probes):
         if not i % 2:
             probe.rotate("z", 180)  # Around the origin (0, 0, 0)
-            probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, 75, 0])
+            probe.translate([-150.0 * len(PG.probes) /
+                            2 + 0.5 + i * 150.0, 75, 0])
         else:
-            probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, -75, 0])
+            probe.translate([-150.0 * len(PG.probes) /
+                            2 + 0.5 + i * 150.0, -75, 0])
 
     if save:
         df = PG.to_df()
@@ -302,18 +304,22 @@ def design202(save=False, output="Design_v202.csv"):
                 probe.rotate("z", 180)  # Around the origin (0, 0, 0)
                 # Emission beams of the end-probes will be directed to the opposite shank.
                 if i == 0:
-                    [e_pixel.rotate_normal("z", 45) for e_pixel in probe.e_pixels]
+                    [e_pixel.rotate_normal("z", 45)
+                     for e_pixel in probe.e_pixels]
                 else:
                     rotate_epixels(probe)
-                probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, 75, 0])
+                probe.translate([-150.0 * len(PG.probes) /
+                                2 + 0.5 + i * 150.0, 75, 0])
 
             else:  # odds
                 # Emission beams of the end-probes will be directed to the opposite shank.
                 if i == 9:
-                    [e_pixel.rotate_normal("z", 45) for e_pixel in probe.e_pixels]
+                    [e_pixel.rotate_normal("z", 45)
+                     for e_pixel in probe.e_pixels]
                 else:
                     rotate_epixels(probe)
-                probe.translate([-150.0 * len(PG.probes) / 2 + 0.5 + i * 150.0, -75, 0])
+                probe.translate([-150.0 * len(PG.probes) /
+                                2 + 0.5 + i * 150.0, -75, 0])
 
     position(PG)
 

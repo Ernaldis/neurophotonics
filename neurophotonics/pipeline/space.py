@@ -17,7 +17,8 @@ class Space:
         self.pitch = pitch  # (um) voxel pitch
         self.dims = dims  # voxels
         self.emitter_shape = emitter_shape  # e.g. rect or sphere
-        self.emitter_size = emitter_size  # (um) (width, height, depth) (x, y, z)
+        # (um) (width, height, depth) (x, y, z)
+        self.emitter_size = emitter_size
         self.detector_type = detector_type
 
         # simulated photon packets: positions and directions
@@ -35,7 +36,8 @@ class Space:
         self.anisotropy = anisotropy  # For the Henyey-Greenstein formula
         self.beam_compression = beam_compression
         self.beam_xy_aspect = beam_xy_aspect  # 2.0 means squeeze y by factor of 2.0
-        self.y_steer = y_steer  # (radians) steer angle in the plane of the shank
+        # (radians) steer angle in the plane of the shank
+        self.y_steer = y_steer
 
         self.volume = np.zeros(self.dims, dtype='float32')  # x, y, z
         self.total_count = 0  # total emitted photons
@@ -52,7 +54,8 @@ class Space:
         m = photons_to_replace.sum()
         self.total_count += m
         if self.emitter_shape == "rect":
-            positions = (np.random.rand(m, 3) - 0.5) * self.emitter_size  # initial position
+            positions = (np.random.rand(m, 3) - 0.5) * \
+                self.emitter_size  # initial position
         elif self.emitter_shape == "sphere":
             positions = np.random.randn(m, 3)
             positions *= 0.5 * np.array(self.emitter_size) / np.sqrt(
@@ -78,11 +81,13 @@ class Space:
             if self.beam_xy_aspect != 1:
                 azi_sin = np.sin(np.arcsin(azi_sin) / self.beam_xy_aspect)
                 azi_cos = np.sign(azi_cos) * np.sqrt(1 - azi_sin * azi_sin)
-            vx, vy, vz = elev_sin * azi_cos, elev_sin * azi_sin, np.sqrt(1 - elev_sin * elev_sin)
+            vx, vy, vz = elev_sin * azi_cos, elev_sin * \
+                azi_sin, np.sqrt(1 - elev_sin * elev_sin)
 
             # beam steering around the x-axis
             if self.y_steer:
-                steer_cos, steer_sin = np.cos(self.y_steer), np.sin(self.y_steer)
+                steer_cos, steer_sin = np.cos(
+                    self.y_steer), np.sin(self.y_steer)
                 vz, vy = steer_cos * vz - steer_sin * vy, steer_sin * vz + steer_cos * vy
             directions = np.stack((vx, vy, vz)).T
         else:
@@ -90,7 +95,8 @@ class Space:
         self.directions[photons_to_replace, :] = directions
 
         # retain photons' starting positions
-        self.start_positions[photons_to_replace, :] = self.positions[photons_to_replace, :]
+        self.start_positions[photons_to_replace,
+                             :] = self.positions[photons_to_replace, :]
 
     def detector_sensitivity(self):
         """
@@ -99,7 +105,8 @@ class Space:
         if self.detector_type == "total":  # use for emission field modeling
             return 1.0
         if self.detector_type == "one-sided":  # equivalent to a lambertian emitter
-            return np.maximum(0, np.sign(self.directions[:, 2]))  # along z-axis
+            # along z-axis
+            return np.maximum(0, np.sign(self.directions[:, 2]))
         if self.detector_type == "narrowed":
             return np.maximum(0, self.directions[:, 2])**4  # along z-axis
         if self.detector_type == "narrowed2":
@@ -117,12 +124,16 @@ class Space:
             fractions = np.random.rand(self.n)[:, None]
             dims = np.array(self.dims)
             positions = np.round(
-                dims / 2 + (start_points * fractions + end_points * (1 - fractions)) / self.pitch
-                ).astype(np.int32)
-            keep = np.all(np.logical_and(positions >= 0, positions < dims), axis=1)
+                dims / 2 + (start_points * fractions +
+                            end_points * (1 - fractions)) / self.pitch
+            ).astype(np.int32)
+            keep = np.all(np.logical_and(
+                positions >= 0, positions < dims), axis=1)
             positions = positions[keep, :]
-            indices = np.ravel_multi_index((positions[:, 0], positions[:, 1], positions[:, 2]), self.volume.shape)
-            self.volume.ravel()[indices] += (self.detector_sensitivity() * lengths)[keep] / samples / self.pitch**3
+            indices = np.ravel_multi_index(
+                (positions[:, 0], positions[:, 1], positions[:, 2]), self.volume.shape)
+            self.volume.ravel()[indices] += (self.detector_sensitivity()
+                                             * lengths)[keep] / samples / self.pitch**3
 
     def hop(self):
         """
@@ -144,12 +155,14 @@ class Space:
         scattered = np.logical_not(absorbed)
         m = scattered.sum()
         g = self.anisotropy
-        gcos = 0.5 / g * (1 + g * g - ((1 - g * g) / (1 - g + 2 * g * np.random.rand(m)))**2)
+        gcos = 0.5 / g * (1 + g * g - ((1 - g * g) /
+                          (1 - g + 2 * g * np.random.rand(m)))**2)
         gsin = np.sqrt(1 - gcos * gcos)
         v = self.directions[scattered] * np.sign(gcos[:, None])
         d = np.random.randn(m, 3) * 0.001
         d -= v * (v * d).sum(axis=1, keepdims=True)  # random orthogonal vector
-        v += gsin[:, None] / np.sqrt((d**2).sum(axis=1, keepdims=True)) * d  # match length to gsin
+        # match length to gsin
+        v += gsin[:, None] / np.sqrt((d**2).sum(axis=1, keepdims=True)) * d
         v /= np.sqrt((v**2).sum(axis=1, keepdims=True))  # normalize
         self.directions[scattered, :] = v
 

@@ -53,9 +53,11 @@ class DField(dj.Computed):
         }
 
         kwargs.update(
-            dims=tuple(spec[k] for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
+            dims=tuple(spec[k]
+                       for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
             emitter_spread="spherical",
-            emitter_size=(float(spec["detector_width"]), float(spec["detector_height"]), 0),
+            emitter_size=(float(spec["detector_width"]),
+                          float(spec["detector_height"]), 0),
         )
 
         space = Space(**kwargs)
@@ -138,13 +140,16 @@ class EField(dj.Computed):
         }
 
         kwargs.update(
-            dims=tuple(spec[k] for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
-            emitter_size=(float(spec["emitter_width"]), float(spec["emitter_height"]), 0),
+            dims=tuple(spec[k]
+                       for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
+            emitter_size=(float(spec["emitter_width"]),
+                          float(spec["emitter_height"]), 0),
         )
 
         space = Space(**kwargs)
         space.run(hops=500_000)
-        self.insert1(dict(key, volume=np.float32(space.volume), total_photons=space.total_count))
+        self.insert1(dict(key, volume=np.float32(space.volume),
+                     total_photons=space.total_count))
 
     def plot(self, figsize=(8, 8), axis=None, gamma=0.7, cmap="magma", title=""):
         from matplotlib_scalebar.scalebar import ScaleBar
