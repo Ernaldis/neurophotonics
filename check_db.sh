@@ -4,4 +4,4 @@ podman-compose -f ./docker/docker-compose-dev.yaml logs 2> /dev/null |\
   while read line ; 
     do keys=$(( $keys + ${line:16} )) ; 
   done
-echo $keys
+echo "$keys"
