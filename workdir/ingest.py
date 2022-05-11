@@ -1,7 +1,7 @@
 import numpy as np
 
-from neurophotonics.pipeline.fields import ESim, DSim
 from neurophotonics.pipeline.design import Design
+from neurophotonics.pipeline.fields import DSim, ESim
 
 
 def ingest_ESimDSim():

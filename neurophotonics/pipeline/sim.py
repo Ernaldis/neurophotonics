@@ -1,17 +1,15 @@
-import tqdm
-import numpy as np
-import datajoint as dj
-from .design import Design, Geometry
-from .fields import ESim, DSim, EField, DField
-from scipy.spatial import distance
-from scipy.spatial.transform import Rotation as R
-from multiprocess import Pool
-from multiprocess import cpu_count
 import gc
 
-from .. import db_prefix
+import datajoint as dj
+import numpy as np
+import tqdm
+from multiprocess import Pool, cpu_count
+from scipy.spatial import distance
+from scipy.spatial.transform import Rotation as R
 
-from .design import Geometry
+from .. import db_prefix
+from .design import Design, Geometry
+from .fields import DField, DSim, EField, ESim
 
 schema = dj.schema(db_prefix + "photonics")
 

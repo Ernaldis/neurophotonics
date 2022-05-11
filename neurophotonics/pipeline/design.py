@@ -1,10 +1,10 @@
-import pandas as pd
-import datajoint as dj
 from pathlib import Path
 
-from .. import db_prefix
-from .fields import EField, DField
+import datajoint as dj
+import pandas as pd
 
+from .. import db_prefix
+from .fields import DField, EField
 
 schema = dj.schema(db_prefix + "photonics")
 

@@ -4,8 +4,7 @@ import scipy
 import tqdm
 
 from .. import db_prefix
-from .sim import Fluorescence, Detection, Tissue
-
+from .sim import Detection, Fluorescence, Tissue
 
 schema = dj.schema(db_prefix + "photonics")
 

@@ -1,4 +1,4 @@
-from neurophotonics.pipeline.sim import Tissue, Fluorescence, Detection
+from neurophotonics.pipeline.sim import Detection, Fluorescence, Tissue
 from scripts.helper import keys_used
 
 print(

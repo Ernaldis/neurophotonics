@@ -1,7 +1,7 @@
-from matplotlib import pyplot as plt
-from matplotlib_scalebar.scalebar import ScaleBar
 import numpy as np
 import tqdm
+from matplotlib import pyplot as plt
+from matplotlib_scalebar.scalebar import ScaleBar
 
 
 class Space:

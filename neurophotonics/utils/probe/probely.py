@@ -1,10 +1,11 @@
-import time
 import functools
+import time
+
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
 from scipy.linalg import norm
 from scipy.spatial.transform import Rotation as R
-import plotly.graph_objects as go
 
 
 def timer(func):
