@@ -77,8 +77,7 @@ class Geometry(dj.Imported):
         self.insert1(key)
 
         efields, dfields = (Design & key).fetch1("efields", "dfields")
-        gm_file, design_path = (Design & key).fetch1(
-            "geometry_file", "design_path")
+        gm_file, design_path = (Design & key).fetch1("geometry_file", "design_path")
 
         gm_fullpath = Path("..") / design_path / gm_file
 
@@ -93,7 +92,8 @@ class Geometry(dj.Imported):
                 float(x) for x in data["center"][1:-1].split(",")
             ]
             d_norm_x, d_norm_y, d_norm_z = [
-                float(x) for x in data["normal"][1:-1].split(",")]
+                float(x) for x in data["normal"][1:-1].split(",")
+            ]
             detector_entry.append(
                 dict(
                     key,
@@ -121,7 +121,8 @@ class Geometry(dj.Imported):
                 float(x) for x in data["center"][1:-1].split(",")
             ]
             e_norm_x, e_norm_y, e_norm_z = [
-                float(x) for x in data["normal"][1:-1].split(",")]
+                float(x) for x in data["normal"][1:-1].split(",")
+            ]
 
             emitter_entry.append(
                 dict(

@@ -37,9 +37,11 @@ class Tissue(dj.Computed):
             xyz = np.hstack(
                 [
                     (Geometry.Emitter & key).fetch(
-                        "e_center_x", "e_center_y", "e_center_z"),
+                        "e_center_x", "e_center_y", "e_center_z"
+                    ),
                     (Geometry.Detector & key).fetch(
-                        "d_center_x", "d_center_y", "d_center_z"),
+                        "d_center_x", "d_center_y", "d_center_z"
+                    ),
                 ]
             )
 
@@ -47,16 +49,15 @@ class Tissue(dj.Computed):
             bounds_min = xyz.min(axis=-1) - margin
             bounds_max = xyz.max(axis=-1) + margin
 
-            volume = (bounds_max - bounds_min).prod() * \
-                1e-9  # 1e-9 is for um3 -> mm3
+            volume = (bounds_max - bounds_min).prod() * 1e-9  # 1e-9 is for um3 -> mm3
             npoints = int(volume * density + 0.5)
 
-            points = np.random.rand(
-                1, 3) * (bounds_max - bounds_min) + bounds_min
+            points = np.random.rand(1, 3) * (bounds_max - bounds_min) + bounds_min
             for i in tqdm.tqdm(range(npoints - 1)):
                 while True:
-                    point = np.random.rand(
-                        1, 3) * (bounds_max - bounds_min) + bounds_min
+                    point = (
+                        np.random.rand(1, 3) * (bounds_max - bounds_min) + bounds_min
+                    )
                     if distance.cdist(points, point).min() > min_distance:
                         break
                 points = np.vstack((points, point))
@@ -159,7 +160,9 @@ class Fluorescence(dj.Computed):
 
             vxyz = np.int16(
                 np.round(
-                    (cell_xyz - e_xyz) @ np.vstack((x_basis, y_basis, z_basis)).T / pitch
+                    (cell_xyz - e_xyz)
+                    @ np.vstack((x_basis, y_basis, z_basis)).T
+                    / pitch
                     + dims / 2
                 )
             )
@@ -171,22 +174,26 @@ class Fluorescence(dj.Computed):
                 * np.array(
                     [
                         volume[q[0], q[1], q[2]]
-                        if 0 <= q[0] < dims[0] and 0 <= q[1] < dims[1] and 0 <= q[2] < dims[2]
+                        if 0 <= q[0] < dims[0]
+                        and 0 <= q[1] < dims[1]
+                        and 0 <= q[2] < dims[2]
                         else 0
                         for q in vxyz
                     ]
                 )
             )
             entry = dict(
-                key, **emit_key, reemitted_photons=np.float32(v), photons_per_joule=v.sum()
+                key,
+                **emit_key,
+                reemitted_photons=np.float32(v),
+                photons_per_joule=v.sum()
             )
 
             Fluorescence.Emitter.insert1(entry, ignore_extra_fields=True)
 
         try:
             with Pool(cpu_count()) as p:
-                p.starmap(calculate, tqdm.tqdm(
-                    input_pars, total=len(input_pars)))
+                p.starmap(calculate, tqdm.tqdm(input_pars, total=len(input_pars)))
         except Exception as e:
             print(e)
             with dj.config(safemode=False):
@@ -271,7 +278,9 @@ class Detection(dj.Computed):
             assert abs(z_basis @ z_basis - 1) < 1e-4
             vxyz = np.int16(
                 np.round(
-                    (cell_xyz - d_xyz) @ np.vstack((x_basis, y_basis, z_basis)).T / pitch
+                    (cell_xyz - d_xyz)
+                    @ np.vstack((x_basis, y_basis, z_basis)).T
+                    / pitch
                     + dims / 2
                 )
             )
@@ -279,20 +288,24 @@ class Detection(dj.Computed):
             v = np.array(
                 [
                     volume[q[0], q[1], q[2]]
-                    if 0 <= q[0] < dims[0] and 0 <= q[1] < dims[1] and 0 <= q[2] < dims[2]
+                    if 0 <= q[0] < dims[0]
+                    and 0 <= q[1] < dims[1]
+                    and 0 <= q[2] < dims[2]
                     else 0
                     for q in vxyz
                 ]
             )
             entry = dict(
-                key, **detect_key, detect_probabilities=np.float32(v), mean_probability=v.sum()
+                key,
+                **detect_key,
+                detect_probabilities=np.float32(v),
+                mean_probability=v.sum()
             )
             Detection.Detector.insert1(entry, ignore_extra_fields=True)
 
         try:
             with Pool(cpu_count()) as p:
-                p.starmap(calculate, tqdm.tqdm(
-                    input_pars, total=len(input_pars)))
+                p.starmap(calculate, tqdm.tqdm(input_pars, total=len(input_pars)))
         except Exception as e:
             print(e)
             with dj.config(safemode=False):

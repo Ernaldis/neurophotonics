@@ -5,9 +5,7 @@ from neurophotonics.populate.worker import standard_worker, _logger
 
 
 # -------- Run process(s) --------
-configured_workers = {
-    'standard_worker': standard_worker
-}
+configured_workers = {"standard_worker": standard_worker}
 
 
 def run(**kwargs):
@@ -21,8 +19,7 @@ def run(**kwargs):
         worker.run()
     except Exception:
         _logger.exception(
-            "Worker '{}' encountered an exception:".format(
-                kwargs["worker_name"])
+            "Worker '{}' encountered an exception:".format(kwargs["worker_name"])
         )
 
 
@@ -33,12 +30,8 @@ def cli():
     This function can be used as entry point to create console scripts with setuptools.
     """
     args = parse_args(sys.argv[1:])
-    run(
-        worker_name=args.worker_name,
-        duration=args.duration,
-        sleep=args.sleep
-    )
+    run(worker_name=args.worker_name, duration=args.duration, sleep=args.sleep)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
