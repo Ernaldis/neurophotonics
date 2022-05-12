@@ -1,10 +1,9 @@
-import numpy as np
 import datajoint as dj
-from .space import Space
+import numpy as np
 from matplotlib import pyplot as plt
 
 from .. import db_prefix
-
+from .space import Space
 
 schema = dj.schema(db_prefix + "photonics")
 
