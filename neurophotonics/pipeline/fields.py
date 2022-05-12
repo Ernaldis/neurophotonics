@@ -46,9 +46,7 @@ class DField(dj.Computed):
 
         kwargs = {
             k: spec[k]
-            for k in spec
-            if k
-            in {
+            for k in spec if k in {
                 "pitch",
                 "anisotropy",
                 "scatter_length",
@@ -58,7 +56,8 @@ class DField(dj.Computed):
         }
 
         kwargs.update(
-            dims=tuple(spec[k] for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
+            dims=tuple(spec[k]
+                       for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
             emitter_spread="spherical",
             emitter_size=(
                 float(spec["detector_width"]),
@@ -76,8 +75,7 @@ class DField(dj.Computed):
                 volume=np.float32(volume),
                 max_value=volume.max(),
                 total_photons=space.total_count,
-            )
-        )
+            ))
 
     def plot(self, axis=None, gamma=0.7, cmap="gray_r", title=""):
         from matplotlib_scalebar.scalebar import ScaleBar
@@ -85,7 +83,7 @@ class DField(dj.Computed):
         info = (self * DSim).fetch1()
         if axis is None:
             _, axis = plt.subplots(1, 1, figsize=(8, 8))
-        axis.imshow((info["volume"].sum(axis=0)) ** gamma, cmap=cmap)
+        axis.imshow((info["volume"].sum(axis=0))**gamma, cmap=cmap)
         axis.axis(False)
         scale_bar = ScaleBar(info["pitch"] * 1e-6)
         axis.add_artist(scale_bar)
@@ -133,9 +131,7 @@ class EField(dj.Computed):
         # pass arguments from lookup to function
         kwargs = {
             k: spec[k]
-            for k in spec
-            if k
-            in {
+            for k in spec if k in {
                 "pitch",
                 "anisotropy",
                 "scatter_length",
@@ -147,7 +143,8 @@ class EField(dj.Computed):
         }
 
         kwargs.update(
-            dims=tuple(spec[k] for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
+            dims=tuple(spec[k]
+                       for k in ("volume_dimx", "volume_dimy", "volume_dimz")),
             emitter_size=(
                 float(spec["emitter_width"]),
                 float(spec["emitter_height"]),
@@ -158,16 +155,22 @@ class EField(dj.Computed):
         space = Space(**kwargs)
         space.run(hops=500_000)
         self.insert1(
-            dict(key, volume=np.float32(space.volume), total_photons=space.total_count)
-        )
+            dict(key,
+                 volume=np.float32(space.volume),
+                 total_photons=space.total_count))
 
-    def plot(self, figsize=(8, 8), axis=None, gamma=0.7, cmap="magma", title=""):
+    def plot(self,
+             figsize=(8, 8),
+             axis=None,
+             gamma=0.7,
+             cmap="magma",
+             title=""):
         from matplotlib_scalebar.scalebar import ScaleBar
 
         info = (self * ESim).fetch1()
         if axis is None:
             _, axis = plt.subplots(1, 1, figsize=(8, 8))
-        axis.imshow((info["volume"].sum(axis=0)) ** gamma, cmap=cmap)
+        axis.imshow((info["volume"].sum(axis=0))**gamma, cmap=cmap)
         axis.axis(False)
         scale_bar = ScaleBar(info["pitch"] * 1e-6)
         axis.add_artist(scale_bar)
